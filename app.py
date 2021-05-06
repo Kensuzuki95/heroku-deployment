@@ -6,18 +6,18 @@ import pickle
 print(os.getcwd())
 path = os.getcwd()
 
-with open('Models/logistic_model.pkl', 'rb') as f:
+with open('Models/heart_logistic_model.pkl', 'rb') as f:
     logistic = pickle.load(f)
 
-with open('Models/RF_model.pkl', 'rb') as f:
-    randomforest = pickle.load(f)
+#with open('Models/RF_model.pkl', 'rb') as f:
+#    randomforest = pickle.load(f)
 
-with open('Models/svm_clf_model.pkl', 'rb') as f:
-    svm_model = pickle.load(f)
+#with open('Models/svm_clf_model.pkl', 'rb') as f:
+#    svm_model = pickle.load(f)
 
 
-def get_predictions(price, Tax, Driver_Age, Licence_Length_Years, req_model):
-    mylist = [Driver_Age, Tax, price, Licence_Length_Years]
+def get_predictions(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal):
+    mylist = [age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]
     mylist = [float(i) for i in mylist]
     vals = [mylist]
 
@@ -25,13 +25,13 @@ def get_predictions(price, Tax, Driver_Age, Licence_Length_Years, req_model):
         #print(req_model)
         return logistic.predict(vals)[0]
 
-    elif req_model == 'RandomForest':
+    #elif req_model == 'RandomForest':
         #print(req_model)
-        return randomforest.predict(vals)[0]
+    #    return randomforest.predict(vals)[0]
 
-    elif req_model == 'SVM':
+    #elif req_model == 'SVM':
         #print(req_model)
-        return svm_model.predict(vals)[0]
+    #    return svm_model.predict(vals)[0]
     else:
         return "Cannot Predict"
 
@@ -47,18 +47,26 @@ def homepage():
 @app.route('/', methods=['POST', 'GET'])
 def my_form_post():
     if request.method == 'POST':
-        price = request.form['price']
-        Tax = request.form['Tax']
-        Driver_Age = request.form['Driver_Age']
-        Licence_Length_Years = request.form['Licence_Length_Years']
-        req_model = request.form['req_model']
+        age = request.form['age']
+        sex = request.form['sex']
+        cp = request.form['cp'] 
+        trestbps = request.form['trestbps'] 
+        chol = request.form['chol'] 
+        fbs = request.form['fbs'] 
+        restecg = request.form['restecg'] 
+        thalach = request.form['thalach'] 
+        exang = request.form['exang'] 
+        oldpeak = request.form['oldpeak'] 
+        slope = request.form['slope'] 
+        ca = request.form['ca'] 
+        thal = request.form['thal']
 
-        target = get_predictions(price, Tax, Driver_Age, Licence_Length_Years, req_model)
+        target = get_predictions(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal)
 
         if target==1:
-            sale_making = 'Customer is likely to buy the insurance'
+            heart_didease = 'The person is likley to have a heart disease'
         else:
-            sale_making = 'Customer is unlikely to buy the insurance'
+            heart_disease = 'The person is unlikely to have a haet disease'
 
         return render_template('home.html', target = target, sale_making = sale_making)
     else:
